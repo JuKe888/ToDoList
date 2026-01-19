@@ -4,6 +4,7 @@ function ToDoList() {
 
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState("");
+    const [taskToDelete, setTaskToDelete] = useState(null);
 
     function handleInputChange(event){
         setNewTask(event.target.value);
@@ -18,8 +19,10 @@ function ToDoList() {
     }
 
     function deleteTask(index){
-        const updatedTasks = tasks.filter((_, i) => i !== index);
-        setTasks(updatedTasks);
+        if (window.confirm("Are you sure you want to delete this task?")) {
+            const updatedTasks = tasks.filter((_, i) => i !== index);
+            setTasks(updatedTasks);
+        }
     }
 
     function moveTaskUp(index){
@@ -50,7 +53,11 @@ function ToDoList() {
                     type="text"
                     placeholder="Enter a task..."
                     value={newTask}
-                    onChange={handleInputChange}/>
+                    onChange={handleInputChange}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') addTask();
+                    }}
+                />
                 <button
                     className="add-button"
                     onClick={addTask}>
@@ -64,7 +71,7 @@ function ToDoList() {
                         <span className="text">{task}</span>
                         <button
                             className="delete-button"
-                            onClick={() => deleteTask(index)}>
+                            onClick={() => setTaskToDelete(index)}>
                             Delete    
                         </button>
                         <button
@@ -80,6 +87,29 @@ function ToDoList() {
                     </li>
                 )}
             </ol>
+
+            {taskToDelete !== null && (
+                <div className="modal-backdrop">
+                    <div className="modal">
+                        <p>You sure say you complete the task🌚?</p>
+                        <button
+                            className="confirm"
+                            onClick={() => {
+                                const updatedTasks = tasks.filter((_, i) => i !== taskToDelete);
+                                setTasks(updatedTasks);
+                                setTaskToDelete(null);
+                            }}>
+                            Yes
+                            </button>
+
+                            <button
+                            className="cancel"
+                            onClick={() => setTaskToDelete(null)}>
+                            No
+                            </button>
+                    </div>
+                </div>
+            )}
 
         </div>);
 }
