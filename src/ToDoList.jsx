@@ -1,8 +1,11 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 
 function ToDoList() {
 
-    const [tasks, setTasks] = useState([]);
+    const [tasks, setTasks] = useState(() => {
+        const savedTasks = localStorage.getItem("tasks");
+        return savedTasks ? JSON.parse(savedTasks) : [];
+    });
     const [newTask, setNewTask] = useState("");
     const [taskToDelete, setTaskToDelete] = useState(null);
 
@@ -11,15 +14,26 @@ function ToDoList() {
     }
 
     function addTask(){
-
-        if(newTask.trim() !== ""){
-            setTasks(t => [...t, newTask]);
+        if(!newTask.trim()) return;
+            setTasks(t => [
+                ...t, 
+                { text: newTask.trim(), completed: false }
+            ]);
             setNewTask("");
-        }
+    }
+
+    function toggleTask(index) {
+        setTasks(tasks =>
+            tasks.map((task, i) =>
+                i === index
+                    ? { ...task, completed: !task.completed }
+                    : task
+            )
+        );
     }
 
     function deleteTask(index){
-        if (window.confirm("Are you sure you want to delete this task?")) {
+        if (window.confirm("You sure say you complete the task?")) {
             const updatedTasks = tasks.filter((_, i) => i !== index);
             setTasks(updatedTasks);
         }
@@ -43,74 +57,73 @@ function ToDoList() {
         }
     }
 
+    useEffect(() => {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+    }, [tasks]);
+
     return(
         <div className="to-do-list">
+            <div className="todo-card">
+                <h1 className="title">
+                    <img src="/todo-icon.png" alt="todo icon" />
+                    To-Do-List
+                </h1>
 
-            <h1>To-Do-List</h1>
-
-            <div>
-                <input
-                    type="text"
-                    placeholder="Enter a task..."
-                    value={newTask}
-                    onChange={handleInputChange}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') addTask();
+                <form
+                    className="task-form"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        addTask();
                     }}
-                />
-                <button
-                    className="add-button"
-                    onClick={addTask}>
-                    Add
-                </button>
-            </div>
+                >
+                    <input
+                        type="text"
+                        placeholder="Enter a task..."
+                        value={newTask}
+                        onChange={handleInputChange}
+                    />
+                    <button type="submit" className="add-button">
+                        Add
+                    </button>
+                </form>
 
-            <ol>
-                {tasks.map((task, index) =>
+                <ol>
+                    {tasks.map((task, index) => (
                     <li key={index}>
-                        <span className="text">{task}</span>
+                        <img
+                            src={task.completed ? "/checked.png" : "/unchecked.png"}
+                            alt="checkbox"
+                            className="checkbox"
+                            onClick={() => toggleTask(index)}
+                        />
+
+                        <span className={`text ${task.completed ? "completed" : ""}`}>
+                            {task.text}
+                        </span>
+
                         <button
                             className="delete-button"
-                            onClick={() => setTaskToDelete(index)}>
-                            Delete    
+                            onClick={() => deleteTask(index)}
+                        >
+                         Delete
+                        </button>
+                        <button
+                        className="move-button"
+                        onClick={() => moveTaskUp(index)}
+                        >
+                            👆
                         </button>
                         <button
                             className="move-button"
-                            onClick={() => moveTaskUp(index)}>
-                            👆    
-                        </button>
-                        <button
-                            className="move-button"
-                            onClick={() => moveTaskDown(index)}>
-                            👇    
+                            onClick={() => moveTaskDown(index)}
+                        >
+                            👇
                         </button>
                     </li>
-                )}
-            </ol>
+                 ))}
+                </ol>
+            </div>
+        </div>
 
-            {taskToDelete !== null && (
-                <div className="modal-backdrop">
-                    <div className="modal">
-                        <p>You sure say you complete the task🌚?</p>
-                        <button
-                            className="confirm"
-                            onClick={() => {
-                                const updatedTasks = tasks.filter((_, i) => i !== taskToDelete);
-                                setTasks(updatedTasks);
-                                setTaskToDelete(null);
-                            }}>
-                            Yes
-                            </button>
-
-                            <button
-                            className="cancel"
-                            onClick={() => setTaskToDelete(null)}>
-                            No
-                            </button>
-                    </div>
-                </div>
-            )}
-
-        </div>);
-}
+)}
 export default ToDoList

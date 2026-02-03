@@ -1,6 +1,7 @@
-body{
-  background-color: hsl(0, 0%, 10%);
+body {
+  background: rgb(53, 34, 94);
 }
+
 .to-do-list{
   font-family: Arial, sans-serif;
   text-align: center;
@@ -9,6 +10,7 @@ body{
 }
 h1{
   font-size: 4rem;
+  color: white;
 }
 button{
   font-size: 1.7rem;
@@ -21,7 +23,7 @@ button{
   transition: background-color 0.5s ease;
 }
 .add-button{
-  background-color: hsl(125, 47%, 54%);
+  background-color: hsl(125, 72%, 20%);
 }
 .add-button:hover{
   background-color: hsl(125, 47%, 44%);
@@ -105,4 +107,69 @@ li{
 .modal .cancel {
   background-color: grey;
   color: black;
+}
+
+.task-form {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 30px 0;
+  justify-content: center;
+}
+
+.task-form input[type="text"] {
+  flex: 1;
+  max-width: 420px;
+  padding: 16px 22px;
+  font-size: 1.5rem;
+  border-radius: 999px;
+  border: none;
+  background-color: hsl(0, 0%, 95%);
+}
+
+.task-form .add-button {
+  padding: 16px 36px;
+  border-radius: 999px;
+  font-size: 1.6rem;
+}
+
+.todo-card {
+  background: rgba(50, 21, 56, 0.571);
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 30px 35px;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.todo-card h1 {
+  color: black;
+}
+
+.todo-card ol {
+  margin-top: 20px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.title img {
+  width: 50px;
+  height: 50px;
+}
+
+.checkbox {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  margin-right: 15px;
+}
+
+.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
 }
